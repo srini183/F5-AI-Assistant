@@ -1,0 +1,11 @@
+# Environments & Secrets
+.env
+.venv/
+env/
+devices.json
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
