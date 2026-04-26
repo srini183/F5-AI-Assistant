@@ -63,6 +63,7 @@ To query multiple F5 devices at once (extremely useful for Reverse Lookups), cre
 
 ## Run
 
+Run locally on the default port (8501):
 ```powershell
 streamlit run app.py
 ```
