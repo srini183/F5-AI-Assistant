@@ -90,7 +90,7 @@ class AIAgent:
         provider: str | None = None,
     ) -> None:
         self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
-        self.openai_model = openai_model or os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+        self.openai_model = openai_model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
         self.ollama_model = ollama_model or os.getenv("OLLAMA_MODEL", "qwen2.5:1.5b")
         self.ollama_base_url = (ollama_base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")).rstrip("/")
         self.provider = (provider or os.getenv("AI_PROVIDER", "ollama")).strip().lower()

@@ -1,12 +1,13 @@
 # F5 AI Assistant
 
-A Streamlit-based Python assistant that translates natural-language prompts into structured read-only F5 BIG-IP API actions. It uses local Ollama by default, with optional OpenAI support only when explicitly enabled.
+A Streamlit-based Python assistant that translates natural-language prompts into structured read-only F5 BIG-IP API actions. It features a modern Material Design UI and powerful multi-device Reverse Lookup capabilities. It uses local Ollama by default, with optional OpenAI support only when explicitly enabled.
 
 ## Project Structure
 
 - `app.py`: main Streamlit chat application
 - `f5_client.py`: BIG-IP REST integration
 - `ai_agent.py`: OpenAI / Ollama intent parsing
+- `devices.json`: (Optional) Inventory file for querying multiple BIG-IPs simultaneously
 - `requirements.txt`: Python dependencies
 
 ## Setup
@@ -38,7 +39,7 @@ Copy-Item .env.example .env
 Required values:
 
 - `BIGIP_HOST` or `F5_HOST`
-- `BIGIP_USERNAME` / `BIGIP_PASSWORD` or `F5_USERNAME` / `F5_PASSWORD`
+- `BIGIP_USERNAME` / `BIGIP_PASSWORD` *(Note: Wrap passwords containing special characters like # or $ in quotes!)*
 - `OLLAMA_BASE_URL`
 - `OLLAMA_MODEL`
 
@@ -48,6 +49,17 @@ Optional values:
 - `AI_PROVIDER` (`ollama` by default, `openai` only if you want OpenAI)
 - `OPENAI_MODEL`
 - `OPENAI_API_KEY`
+
+5. (Optional) Multi-Device Inventory:
+
+To query multiple F5 devices at once (extremely useful for Reverse Lookups), create a `devices.json` file in the root directory:
+```json
+{
+  "Datacenter-A": "https://10.0.1.100",
+  "Datacenter-B": "https://10.0.2.100"
+}
+```
+*If `devices.json` is missing, the application will simply fall back to querying the single `BIGIP_HOST` defined in your `.env` file.*
 
 ## Run
 

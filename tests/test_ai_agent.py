@@ -46,7 +46,7 @@ class AIAgentSafetyTests(unittest.TestCase):
     def test_local_parser_extracts_specific_vip_name(self) -> None:
         payload = AIAgent().parse_user_query("get VIP status for app1_vs")
 
-        self.assertEqual(payload["action"], "get_vip_status")
+        self.assertEqual(payload["action"], "get_vip_details")
         self.assertEqual(payload["virtual_server"], "app1_vs")
 
     def test_local_parser_extracts_pool_member_name(self) -> None:

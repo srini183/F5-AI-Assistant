@@ -6,9 +6,10 @@ from f5_client import F5Client, F5ClientError
 
 
 class FakeResponse:
-    def __init__(self, payload=None, json_error: Exception | None = None) -> None:
+    def __init__(self, payload=None, json_error: Exception | None = None, status_code: int = 200) -> None:
         self.payload = payload
         self.json_error = json_error
+        self.status_code = status_code
 
     def raise_for_status(self) -> None:
         return None
@@ -39,19 +40,19 @@ class F5ClientTests(unittest.TestCase):
     def test_placeholder_host_is_rejected(self) -> None:
         with self.assertRaisesRegex(F5ClientError, "Missing real"):
             F5Client(
-                target="bigip",
                 host="https://your-bigip.example.com",
                 username="admin",
                 password="secret",
             )
 
     def test_bigip_pool_reference_supports_folders_and_encoding(self) -> None:
-        self.assertEqual(F5Client._bigip_pool_reference("app1"), "~Common~app1")
+        client = build_client(FakeResponse(payload={}))
+        self.assertEqual(client._bigip_pool_reference("app1"), "~Common~app1")
         self.assertEqual(
-            F5Client._bigip_pool_reference("/Common/app/folder_pool"),
+            client._bigip_pool_reference("/Common/app/folder_pool"),
             "~Common~app~folder_pool",
         )
-        self.assertEqual(F5Client._bigip_pool_reference("/Common/app pool"), "~Common~app%20pool")
+        self.assertEqual(client._bigip_pool_reference("/Common/app pool"), "~Common~app%20pool")
 
     def test_request_wraps_non_json_response(self) -> None:
         client = build_client(FakeResponse(json_error=ValueError("not json")))
@@ -75,7 +76,7 @@ class F5ClientTests(unittest.TestCase):
         with self.assertRaisesRegex(F5ClientError, "F5 API request failed"):
             client._request("/bad")
 
-    def test_get_vip_status_filters_specific_virtual_server(self) -> None:
+    def test_internal_get_vip_status_filters_specific_virtual_server(self) -> None:
         client = build_client(
             FakeResponse(
                 payload={
@@ -98,9 +99,8 @@ class F5ClientTests(unittest.TestCase):
                 }
             )
         )
-        client.target = "bigiq"
 
-        result = client.get_vip_status("app1_vs")
+        result = client._get_vip_status("app1_vs")
 
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["name"], "app1_vs")
